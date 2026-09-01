@@ -19,12 +19,19 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isVisible = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isVisible = !_isVisible;
+    });
   }
 
   @override
@@ -89,13 +96,21 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 16),
                   TextField(
                     controller: _passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      focusedBorder: UnderlineInputBorder(
+                    obscureText: !_isVisible ? false : true,
+                    decoration: InputDecoration(
+                      focusedBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(color: DefaultColors.orange),
                       ),
                       labelText: 'Senha',
-                      prefixIcon: Icon(Icons.lock, color: DefaultColors.orange),
+                      prefixIcon:
+                          const Icon(Icons.lock, color: DefaultColors.orange),
+                      suffixIcon: IconButton(
+                        onPressed: () => _togglePasswordVisibility(),
+                        icon: Icon(
+                          _isVisible ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        color: DefaultColors.orange,
+                      ),
                     ),
                     style: const TextStyle(color: Colors.white),
                   ),
