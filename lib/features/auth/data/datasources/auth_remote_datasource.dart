@@ -1,90 +1,49 @@
-import 'dart:convert';
+import 'package:my_car/core/error/exceptions.dart';
+import 'package:my_car/core/network/api_client.dart';
+import 'package:my_car/core/network/endpoints.dart';
+import 'package:my_car/features/auth/data/models/app_user_model.dart';
 
-import 'package:dio/dio.dart';
-
-import '../../../../utils/client/routes.dart';
-import '../models/app_user_model.dart';
-
-class UserAlreadyExistsException implements Exception {
+final class UserAlreadyExistsException extends AppException {
   const UserAlreadyExistsException();
 }
 
-class AuthApiException implements Exception {
-  final String message;
-  final int? statusCode;
+abstract interface class AuthRemoteDataSource {
+  Future<AppUserModel> signIn({
+    required String email,
+    required String password,
+  });
 
-  const AuthApiException(this.message, {this.statusCode});
+  Future<AppUserModel> register({
+    required String name,
+    required String email,
+    required String password,
+  });
 }
 
-class InvalidAuthResponseException implements Exception {
-  const InvalidAuthResponseException();
-}
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+  final ApiClient _client;
 
-class AuthNetworkException implements Exception {
-  const AuthNetworkException();
-}
-
-class AuthService {
-  final Dio _dio;
+  // TODO: substituir pelo endpoint de cadastro quando a API disponibilizar.
   final Map<String, AppUserModel> _localUsers = {};
 
-  AuthService(this._dio);
+  AuthRemoteDataSourceImpl(this._client);
 
+  @override
   Future<AppUserModel> signIn({
     required String email,
     required String password,
   }) async {
-    try {
-      var data = {
+    final data = await _client.post(
+      Endpoints.login,
+      data: {
         'email': email.trim().toLowerCase(),
         'password': password,
-      };
-
-      final response = await _dio.post<dynamic>(
-        Endpoints.login,
-        data: data,
-      );
-
-      return AppUserModel.fromJson(_extractUserJson(response.data));
-    } on DioException catch (error) {
-      final response = error.response;
-      if (response != null) {
-        throw AuthApiException(
-          _extractErrorMessage(response.data),
-          statusCode: response.statusCode,
-        );
-      }
-      throw const AuthNetworkException();
-    } on InvalidAuthResponseException {
-      rethrow;
-    } catch (_) {
-      throw const InvalidAuthResponseException();
-    }
+      },
+    );
+    return AppUserModel.fromJson(_extractUserJson(data));
   }
 
-  String _extractErrorMessage(dynamic responseData) {
-    if (responseData is String && responseData.trim().isNotEmpty) {
-      return responseData;
-    }
-
-    if (responseData is Map) {
-      final data = Map<String, dynamic>.from(responseData);
-      final message = data['message'];
-      if (message is String && message.trim().isNotEmpty) return message;
-
-      final error = data['error'];
-      if (error is String && error.trim().isNotEmpty) return error;
-      if (error is Map) return _extractErrorMessage(error);
-
-      final nestedData = data['data'];
-      if (nestedData is Map || nestedData is String) {
-        return _extractErrorMessage(nestedData);
-      }
-    }
-
-    return 'A API não informou o motivo da falha.';
-  }
-
+  @override
   Future<AppUserModel> register({
     required String name,
     required String email,
@@ -104,24 +63,25 @@ class AuthService {
     return user;
   }
 
+  /// Aceita `{...user}`, `{user: {...}}`, `{data: {...}}` e
+  /// `{data: {user: {...}}}`.
   Map<String, dynamic> _extractUserJson(dynamic responseData) {
     if (responseData is! Map) {
-      throw const InvalidAuthResponseException();
+      throw const ParseException('Resposta de login não é um objeto.');
     }
 
-    final root = Map<String, dynamic>.from(responseData);
-    dynamic userData = root['user'] ?? root['data'] ?? root;
-
+    dynamic userData =
+        responseData['user'] ?? responseData['data'] ?? responseData;
     if (userData is Map && userData['user'] is Map) {
       userData = userData['user'];
     }
     if (userData is! Map) {
-      throw const InvalidAuthResponseException();
+      throw const ParseException('Usuário ausente na resposta de login.');
     }
 
     final userJson = Map<String, dynamic>.from(userData);
     if (userJson['id'] == null || userJson['email'] == null) {
-      throw const InvalidAuthResponseException();
+      throw const ParseException('Usuário sem id ou e-mail.');
     }
     return userJson;
   }

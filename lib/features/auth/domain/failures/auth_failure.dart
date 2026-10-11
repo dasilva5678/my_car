@@ -1,19 +1,10 @@
-import '../../../core/error/app_failure.dart';
+import 'package:my_car/core/error/failures.dart';
 
-final class AuthFailure extends AppFailure {
-  const AuthFailure(super.message);
-
-  const AuthFailure.invalidFields()
-      : super('Preencha todos os campos obrigatórios.');
+/// Falhas de regra de negócio da autenticação. Falhas genéricas
+/// (rede, timeout, servidor...) usam as classes de `core/error/failures.dart`.
+final class AuthFailure extends Failure {
+  const AuthFailure.invalidCredentials() : super('E-mail ou senha incorretos.');
 
   const AuthFailure.userAlreadyExists()
       : super('Já existe uma conta com este e-mail.');
-
-  const AuthFailure.network() : super('Não foi possível conectar ao servidor.');
-
-  const AuthFailure.invalidResponse()
-      : super('O servidor retornou uma resposta inválida.');
-
-  const AuthFailure.unexpected()
-      : super('Não foi possível concluir a operação. Tente novamente.');
 }

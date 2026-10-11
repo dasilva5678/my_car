@@ -1,6 +1,6 @@
-import 'dart:ui';
+import 'package:flutter/painting.dart';
 
-abstract class AppRadius {
+abstract final class AppRadius {
   static const sm = Radius.circular(4);
   static const md = Radius.circular(8);
   static const lg = Radius.circular(16);

@@ -1,5 +1,5 @@
-class NameRoutes {
-  static const String login = '/login';
-  static const String register = '/register';
-  static const String vehicles = '/vehicles';
+abstract final class RouteNames {
+  static const login = '/login';
+  static const register = '/register';
+  static const vehicles = '/vehicles';
 }

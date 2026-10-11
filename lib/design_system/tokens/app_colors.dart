@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
 
-class DefaultColors {
-  static const Color white = Colors.white;
-  static const Color black = Colors.black;
-  static const Color grey = Colors.white24;
-  static const Color textColor = Colors.white54;
-  static const Color red = Colors.redAccent;
-  static const Color error = Colors.red;
-  static const Color orange = Color(0xFFFF6F00);
-  static const Color secondary = Color(0xFF42A5F5);
-  static const Color background = Color(0xFFF5F5F5);
-  static const Color textPrimary = Color(0xFF212121);
+/// Paleta do app (tema escuro). Use os nomes semânticos — nunca cores
+/// literais nas telas — para que trocar a identidade visual seja só
+/// alterar este arquivo.
+abstract final class AppColors {
+  // Marca
+  static const primary = Color(0xFFFF6F00);
+  static const onPrimary = Color(0xFFFFFFFF);
+
+  // Superfícies
+  static const background = Color(0xFF0F0F11);
+  static const surface = Color(0xFF1A1A1D);
+  static const surfaceVariant = Color(0xFF26262B);
+  static const border = Color(0xFF3A3A41);
+
+  // Texto
+  static const textPrimary = Color(0xFFF5F5F7);
+  static const textSecondary = Color(0xFFA1A1AA);
+  static const textDisabled = Color(0xFF6B6B74);
+
+  // Feedback
+  static const error = Color(0xFFEF5350);
+  static const success = Color(0xFF43A047);
+  static const warning = Color(0xFFFFB300);
+  static const info = Color(0xFF42A5F5);
+  static const onFeedback = Color(0xFFFFFFFF);
 }

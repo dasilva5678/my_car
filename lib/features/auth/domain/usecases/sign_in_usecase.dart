@@ -1,28 +1,21 @@
-import '../../../../core/result/result.dart';
-import '../entities/app_user.dart';
-import '../repositories/auth_repository.dart';
+import 'package:my_car/core/either/either.dart';
+import 'package:my_car/core/error/failures.dart';
+import 'package:my_car/core/validators/validators.dart';
+import 'package:my_car/features/auth/domain/entities/app_user.dart';
+import 'package:my_car/features/auth/domain/repositories/auth_repository.dart';
 
-class SignIn {
+class SignInUseCase {
   final AuthRepository _repository;
 
-  const SignIn(this._repository);
+  const SignInUseCase(this._repository);
 
-  Future<Result<AppUser>> call({
+  Future<Either<Failure, AppUser>> call({
     required String email,
     required String password,
-  }) =>
-      _repository.signIn(email: email, password: password);
-}
+  }) async {
+    final error = Validators.email(email) ?? Validators.password(password);
+    if (error != null) return Left(ValidationFailure(error));
 
-class RegisterUserUsecase {
-  final AuthRepository _repository;
-
-  const RegisterUserUsecase(this._repository);
-
-  Future<Result<AppUser>> call({
-    required String name,
-    required String email,
-    required String password,
-  }) =>
-      _repository.register(name: name, email: email, password: password);
+    return _repository.signIn(email: email, password: password);
+  }
 }

@@ -1,37 +1,40 @@
-﻿import 'package:equatable/equatable.dart';
-import '../domain/entities/app_user.dart';
+import 'package:equatable/equatable.dart';
+import 'package:my_car/core/error/failures.dart';
+import 'package:my_car/features/auth/domain/entities/app_user.dart';
 
-abstract class AuthState extends Equatable {
+sealed class AuthState extends Equatable {
   const AuthState();
 
   @override
   List<Object?> get props => [];
 }
 
-class AuthInitial extends AuthState {
+final class AuthInitial extends AuthState {
   const AuthInitial();
 }
 
-class AuthLoading extends AuthState {
+final class AuthLoading extends AuthState {
   const AuthLoading();
 }
 
-class AuthAuthenticated extends AuthState {
+final class AuthAuthenticated extends AuthState {
   final AppUser user;
+
   const AuthAuthenticated(this.user);
 
   @override
   List<Object?> get props => [user];
 }
 
-class AuthUnauthenticated extends AuthState {
+final class AuthUnauthenticated extends AuthState {
   const AuthUnauthenticated();
 }
 
-class AuthError extends AuthState {
-  final String message;
-  const AuthError(this.message);
+final class AuthError extends AuthState {
+  final Failure failure;
+
+  const AuthError(this.failure);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }
