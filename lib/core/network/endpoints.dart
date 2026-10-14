@@ -12,4 +12,5 @@ abstract final class ApiConfig {
 /// Caminhos relativos à [ApiConfig.baseUrl].
 abstract final class Endpoints {
   static const login = '/user/login';
+  static const forgotPassword = '/auth/forgot-password';
 }

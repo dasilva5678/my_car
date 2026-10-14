@@ -107,4 +107,28 @@ void main() {
       );
     });
   });
+
+  group('forgotPassword', () {
+    test('envia o e-mail normalizado para o endpoint', () async {
+      when(() =>
+              client.post(Endpoints.forgotPassword, data: any(named: 'data')))
+          .thenAnswer((_) async => null);
+
+      await dataSource.forgotPassword(email: '  JESSICA@Mail.com ');
+
+      verify(
+        () => client.post(Endpoints.forgotPassword, data: {'email': tEmail}),
+      ).called(1);
+    });
+
+    test('propaga AppException do ApiClient', () async {
+      when(() => client.post(any(), data: any(named: 'data')))
+          .thenThrow(const ServerException(statusCode: 500));
+
+      expect(
+        () => dataSource.forgotPassword(email: tEmail),
+        throwsA(isA<ServerException>()),
+      );
+    });
+  });
 }

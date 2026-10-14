@@ -18,6 +18,8 @@ abstract interface class AuthRemoteDataSource {
     required String email,
     required String password,
   });
+
+  Future<void> forgotPassword({required String email});
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -61,6 +63,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     );
     _localUsers[normalizedEmail] = user;
     return user;
+  }
+
+  @override
+  Future<void> forgotPassword({required String email}) async {
+    // 200/204 não trazem corpo relevante; erros chegam como AppException.
+    await _client.post(
+      Endpoints.forgotPassword,
+      data: {'email': email.trim().toLowerCase()},
+    );
   }
 
   /// Aceita `{...user}`, `{user: {...}}`, `{data: {...}}` e

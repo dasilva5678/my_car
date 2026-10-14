@@ -38,6 +38,10 @@ class AuthRepositoryImpl with RepositoryGuard implements AuthRepository {
       });
 
   @override
+  Future<Either<Failure, void>> forgotPassword({required String email}) =>
+      guard(() => _remote.forgotPassword(email: email));
+
+  @override
   Failure mapException(AppException exception) => switch (exception) {
         UserAlreadyExistsException() ||
         ServerException(statusCode: 409) =>
