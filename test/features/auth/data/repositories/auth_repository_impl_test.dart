@@ -99,4 +99,26 @@ void main() {
       expect(leftOf(await register()), const UnexpectedFailure());
     });
   });
+
+  group('forgotPassword', () {
+    test('retorna Right quando a API responde com sucesso', () async {
+      when(() => remote.forgotPassword(email: tEmail)).thenAnswer((_) async {});
+
+      final result = await repository.forgotPassword(email: tEmail);
+
+      expect(result.isRight, isTrue);
+    });
+
+    test('erro de servidor -> ServerFailure', () async {
+      when(() => remote.forgotPassword(email: any(named: 'email')))
+          .thenThrow(const ServerException(statusCode: 500));
+
+      final result = await repository.forgotPassword(email: tEmail);
+
+      expect(
+        result.fold(onLeft: (f) => f, onRight: (_) => null),
+        const ServerFailure(statusCode: 500),
+      );
+    });
+  });
 }

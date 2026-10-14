@@ -39,6 +39,14 @@ class _LoginPageState extends State<LoginPage> {
         );
   }
 
+  void _openForgotPassword() {
+    final email = _emailController.text.trim();
+    context.push(
+      RouteNames.forgotPassword,
+      extra: email.isEmpty ? null : email,
+    );
+  }
+
   void _onStateChanged(BuildContext context, AuthState state) {
     switch (state) {
       case AuthAuthenticated():
@@ -105,6 +113,13 @@ class _LoginPageState extends State<LoginPage> {
                           validator: Validators.password,
                           onFieldSubmitted: (_) => _submit(),
                           enabled: !isLoading,
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: AppButton.text(
+                            label: 'Esqueci minha senha',
+                            onPressed: isLoading ? null : _openForgotPassword,
+                          ),
                         ),
                         const SizedBox(height: AppSpacing.lg),
                         AppButton(

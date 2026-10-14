@@ -13,4 +13,8 @@ abstract interface class AuthRepository {
     required String email,
     required String password,
   });
+
+  /// Solicita o envio do link de redefinição de senha. A API responde
+  /// sucesso mesmo quando o e-mail não existe, para não revelar contas.
+  Future<Either<Failure, void>> forgotPassword({required String email});
 }
