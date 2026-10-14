@@ -1,5 +1,6 @@
 import 'package:my_car/core/error/exceptions.dart';
 import 'package:my_car/core/network/api_client.dart';
+import 'package:my_car/core/network/auth_token_store.dart';
 import 'package:my_car/core/network/endpoints.dart';
 import 'package:my_car/features/auth/data/models/app_user_model.dart';
 
@@ -24,11 +25,12 @@ abstract interface class AuthRemoteDataSource {
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final ApiClient _client;
+  final AuthTokenStore _tokenStore;
 
   // TODO: substituir pelo endpoint de cadastro quando a API disponibilizar.
   final Map<String, AppUserModel> _localUsers = {};
 
-  AuthRemoteDataSourceImpl(this._client);
+  AuthRemoteDataSourceImpl(this._client, this._tokenStore);
 
   @override
   Future<AppUserModel> signIn({
@@ -42,7 +44,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         'password': password,
       },
     );
-    return AppUserModel.fromJson(_extractUserJson(data));
+    final user = AppUserModel.fromJson(_extractUserJson(data));
+    _tokenStore.save(_extractToken(data));
+    return user;
   }
 
   @override
@@ -95,5 +99,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw const ParseException('Usuário sem id ou e-mail.');
     }
     return userJson;
+  }
+
+  /// Aceita `token`, `accessToken` ou `access_token` na raiz ou em `data`.
+  String? _extractToken(dynamic responseData) {
+    if (responseData is! Map) return null;
+
+    for (final source in [responseData, responseData['data']]) {
+      if (source is! Map) continue;
+      for (final key in const ['token', 'accessToken', 'access_token']) {
+        final value = source[key];
+        if (value is String && value.isNotEmpty) return value;
+      }
+    }
+    return null;
   }
 }

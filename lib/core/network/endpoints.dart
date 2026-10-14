@@ -13,4 +13,7 @@ abstract final class ApiConfig {
 abstract final class Endpoints {
   static const login = '/user/login';
   static const forgotPassword = '/auth/forgot-password';
+  static const vehicles = '/vehicles';
+
+  static String vehicle(String id) => '/vehicles/$id';
 }

@@ -18,6 +18,7 @@ class CustomText extends StatelessWidget {
   final TextAlign? textAlign;
   final int? maxLines;
   final TextOverflow? overflow;
+  final double? letterSpacing;
   final _StyleResolver _resolveStyle;
 
   /// Corpo de texto padrão (`bodyMedium`, 14).
@@ -30,6 +31,7 @@ class CustomText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
+    this.letterSpacing,
   }) : _resolveStyle = _body;
 
   /// Título principal de tela (`headlineLarge`, 32).
@@ -42,6 +44,7 @@ class CustomText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
+    this.letterSpacing,
   }) : _resolveStyle = _headline;
 
   /// Título de seção (`headlineMedium`, 24).
@@ -54,6 +57,7 @@ class CustomText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
+    this.letterSpacing,
   }) : _resolveStyle = _subheadline;
 
   /// Título de card / item (`titleLarge`, 20).
@@ -66,6 +70,7 @@ class CustomText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
+    this.letterSpacing,
   }) : _resolveStyle = _title;
 
   /// Subtítulo (`titleMedium`, 16 semibold).
@@ -78,6 +83,7 @@ class CustomText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
+    this.letterSpacing,
   }) : _resolveStyle = _subtitle;
 
   /// Corpo de texto maior (`bodyLarge`, 16).
@@ -90,6 +96,7 @@ class CustomText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
+    this.letterSpacing,
   }) : _resolveStyle = _bodyLarge;
 
   /// Rótulos de botões e chips (`labelLarge`, 15 bold).
@@ -102,6 +109,7 @@ class CustomText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
+    this.letterSpacing,
   }) : _resolveStyle = _label;
 
   /// Texto auxiliar, legendas e metadados (`bodySmall`, 12).
@@ -114,6 +122,7 @@ class CustomText extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.overflow,
+    this.letterSpacing,
   }) : _resolveStyle = _caption;
 
   static TextStyle? _headline(TextTheme t) => t.headlineLarge;
@@ -139,6 +148,7 @@ class CustomText extends StatelessWidget {
         color: color,
         fontSize: fontSize,
         fontWeight: fontWeight,
+        letterSpacing: letterSpacing,
       ),
     );
   }

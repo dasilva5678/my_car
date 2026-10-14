@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:my_car/core/error/exceptions.dart';
 import 'package:my_car/core/network/api_client.dart';
+import 'package:my_car/core/network/auth_token_store.dart';
 import 'package:my_car/core/network/endpoints.dart';
 import 'package:my_car/features/auth/data/datasources/auth_remote_datasource.dart';
 
@@ -11,11 +12,13 @@ class _MockApiClient extends Mock implements ApiClient {}
 
 void main() {
   late _MockApiClient client;
+  late AuthTokenStore tokenStore;
   late AuthRemoteDataSourceImpl dataSource;
 
   setUp(() {
     client = _MockApiClient();
-    dataSource = AuthRemoteDataSourceImpl(client);
+    tokenStore = AuthTokenStore();
+    dataSource = AuthRemoteDataSourceImpl(client, tokenStore);
   });
 
   void stubLogin(dynamic response) => when(
@@ -56,6 +59,27 @@ void main() {
         expect(user.id, '1');
         expect(user.name, tName);
         expect(user.email, tEmail);
+      });
+    }
+
+    for (final entry in {
+      'token na raiz': {
+        'token': 'abc',
+        'user': {'id': 1, 'name': tName, 'email': tEmail},
+      },
+      'accessToken em data': {
+        'data': {
+          'accessToken': 'abc',
+          'user': {'id': 1, 'name': tName, 'email': tEmail},
+        },
+      },
+    }.entries) {
+      test('guarda o token no formato "${entry.key}"', () async {
+        stubLogin(entry.value);
+
+        await dataSource.signIn(email: tEmail, password: tPassword);
+
+        expect(tokenStore.token, 'abc');
       });
     }
 

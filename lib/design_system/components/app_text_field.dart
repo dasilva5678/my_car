@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Campo de texto do design system. Visual vem do `InputDecorationTheme`;
 /// aqui só se expõe o que varia por uso.
@@ -8,10 +9,13 @@ class AppTextField extends StatelessWidget {
   final String? hint;
   final IconData? prefixIcon;
   final Widget? suffix;
+  final String? suffixText;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onFieldSubmitted;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
+  final TextCapitalization textCapitalization;
+  final List<TextInputFormatter>? inputFormatters;
   final Iterable<String>? autofillHints;
   final bool obscureText;
   final bool enabled;
@@ -23,10 +27,13 @@ class AppTextField extends StatelessWidget {
     this.hint,
     this.prefixIcon,
     this.suffix,
+    this.suffixText,
     this.validator,
     this.onFieldSubmitted,
     this.keyboardType,
     this.textInputAction,
+    this.textCapitalization = TextCapitalization.none,
+    this.inputFormatters,
     this.autofillHints,
     this.obscureText = false,
     this.enabled = true,
@@ -40,6 +47,8 @@ class AppTextField extends StatelessWidget {
       onFieldSubmitted: onFieldSubmitted,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
+      textCapitalization: textCapitalization,
+      inputFormatters: inputFormatters,
       autofillHints: autofillHints,
       obscureText: obscureText,
       enabled: enabled,
@@ -50,6 +59,7 @@ class AppTextField extends StatelessWidget {
         hintText: hint,
         prefixIcon: prefixIcon == null ? null : Icon(prefixIcon),
         suffixIcon: suffix,
+        suffixText: suffixText,
       ),
     );
   }
